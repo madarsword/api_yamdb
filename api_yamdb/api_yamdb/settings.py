@@ -17,6 +17,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -89,3 +90,14 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+
+
+EMAIL_HOST = 'smtp.mailserver.com'
+
+EMAIL_PORT = 587
+
+EMAIL_HOST_USER = 'username'
+
+EMAIL_HOST_PASSWORD = 'hostpassword'
+
+EMAIL_USE_TLS = True
