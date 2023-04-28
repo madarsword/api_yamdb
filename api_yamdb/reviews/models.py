@@ -5,6 +5,8 @@ from django.core.validators import (
 )
 from django.contrib.auth import get_user_model
 
+from .models import Title
+
 
 User = get_user_model()  # удалить и заменить на
                          # Саниного абстракт юзера
@@ -44,6 +46,7 @@ class Review(models.Model):
         auto_now_add=True,
         verbose_name='Дата публикации отзыва',
     )
+
 
 class Genre(models.Model):
     name = models.CharField(max_length=256)

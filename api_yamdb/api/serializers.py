@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from rest_framework import serializers
-from reviews.models import Review
+
+from reviews.models import Review, Genre, Category, Title
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -33,10 +36,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                 'Нельзя оставлять больше одного отзыва на произведение'
             )
         return data
-
-from datetime import datetime
-
-from reviews.models import Genre, Category, Title
 
 
 class GenreSerialzier(serializers.ModelSerializer):
