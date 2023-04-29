@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from reviews.models import Review
+from reviews.models import Review, Comment
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -25,11 +25,22 @@ class ReviewSerializer(serializers.ModelSerializer):
         if not request.method == 'POST':
             return data
         author = request.user
-        # title_id = request.kwargs.get('title_id')
-            # не понимаю пока, как это писать. Написано точно неправильно,
-            # в request'е нет 'title_id'
+        title_id = self.context.get('view').kwargs.get('title_id')
         if Review.objects.filter(author=author, title=title_id).exists():
             raise serializers.ValidationError(
                 'Нельзя оставлять больше одного отзыва на произведение'
             )
         return data
+
+
+class CommentSerializer(serializers.ModelSerializer):
+
+    author = serializers.StringRelatedField(
+        read_only=True
+    )
+
+    class Meta:
+        model = Comment
+        fields = (
+            'id', 'text', 'author', 'pub_date'
+        )
