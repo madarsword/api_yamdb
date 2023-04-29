@@ -8,10 +8,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username',
         read_only=True,
     )
-    title = serializers.SlugRelatedField(
-        slug_field='id',
-        read_only=True,
-    )
 
     class Meta:
         model = Review
