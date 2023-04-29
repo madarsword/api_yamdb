@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'api.apps.ApiConfig',
     'reviews.apps.ReviewsConfig',
+    'users.apps.UsersConfig',
     'django_filters',
 ]
 
@@ -114,14 +115,8 @@ SIMPLE_JWT = {
 }
 
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_HOST_USER = "your@yandex.ru"
-EMAIL_HOST_PASSWORD = "password"
+AUTH_USER_MODEL = 'users.User'
 
-EMAIL_PORT = 465
 
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
-
-SERVER_EMAIL = EMAIL_HOST_USER
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = BASE_DIR / 'app-messages'
