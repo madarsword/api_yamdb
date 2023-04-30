@@ -1,8 +1,8 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView
-from .views import TitleViewSet, ReviewViewSet, CommentViewSet
 
+from .views import CommentViewSet, ReviewViewSet, TitleViewSet
 
 router_v1 = DefaultRouter()
 router_v1.register(r'titles', TitleViewSet, basename='titles')

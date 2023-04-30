@@ -1,14 +1,12 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import status, viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from reviews.models import Review, Title
 
-from .serializers import CommentSerializer, ReviewSerializer, TitleSerializer
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .serializers import SignUpSerializer
+from .serializers import (CommentSerializer, ReviewSerializer,
+                          SignUpSerializer, TitleSerializer)
 
 
 class ConfirmationCode(viewsets.GenericViewSet):
