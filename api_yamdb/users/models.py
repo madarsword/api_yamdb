@@ -30,7 +30,6 @@ class User(AbstractUser):
         choices=ROLE,
         default=USER
     )
-    confirmation_code = 
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['email']
