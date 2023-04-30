@@ -1,10 +1,9 @@
 from django.db import models
-from django.core.validators import (
-    MinValueValidator,
-    MaxValueValidator,
-)
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
+
 from .models import Title
+from .validators import validate_year
 
 
 User = get_user_model()
@@ -15,7 +14,7 @@ class Genre(models.Model):
     slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.name
+        return self.slug
 
 
 class Category(models.Model):
@@ -23,17 +22,19 @@ class Category(models.Model):
     slug = models.SlugField(max_length=50, unique=True)
 
     def __str__(self):
-        return self.name
+        return self.slug
 
 
 class Title(models.Model):
     name = models.CharField(max_length=256)
-    year = models.IntegerField()
-    description = models.TextField()
+    year = models.IntegerField(validators=[validate_year])
+    description = models.TextField(null=True)
     genre = models.ManyToManyField(Genre)
     category = models.ForeignKey(
-        Category, on_delete=models.SET_NULL,
+        Category,
+        on_delete=models.SET_NULL,
         null=True,
+        blank=True,
         related_name='titles'
     )
 
@@ -42,13 +43,11 @@ class Title(models.Model):
 
 
 class Review(models.Model):
-
     title = models.ForeignKey(
         Title,
         on_delete=models.CASCADE,
         related_name='reviews',
         verbose_name='Произведение',
-        null=True,
     )
     text = models.TextField(
         verbose_name='Текст отзыва',
@@ -59,8 +58,9 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Автор отзыва',
     )
-    score = models.PositiveSmallIntegerField(
+    score = models.IntegerField(
         verbose_name='Оценка',
+        default=1,
         validators=[
             MinValueValidator(
                 1,
@@ -80,13 +80,16 @@ class Review(models.Model):
     class Meta:
         verbose_name = 'Отзыв',
         verbose_name_plural = 'Отзывы',
+        constraints = [
+            models.UniqueConstraint(
+            fields=['author', 'title'], name="unique_review")
+        ]
 
     def __str__(self):
         return self.text[:15]
 
 
 class Comment(models.Model):
-
     text = models.TextField(
         verbose_name='Текст комментария',
     )
@@ -112,4 +115,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии',
     
     def __str__(self):
-        return self.text[:15]
+        return self.author

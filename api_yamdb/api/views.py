@@ -1,14 +1,13 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import viewsets
 from reviews.models import Review, Comment, Title
-from .serializers import (ReviewSerializer, CommentSerializer
-                         TitleSerializer)
+from .serializers import (ReviewSerializer, CommentSerializer, 
+                          TitleSerializer)
 
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
     filter_backends = (DjangoFilterBackend, )
@@ -16,7 +15,6 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
-
     serializer_class = ReviewSerializer
     # permission_classes = ()
 
@@ -35,7 +33,6 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-
     serializer_class = CommentSerializer
     # permission_classes = ()
 
