@@ -63,3 +63,15 @@ class CommentViewSet(viewsets.ModelViewSet):
             author=self.request.user,
             review=self.get_review()
         )
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    pass
