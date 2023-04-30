@@ -3,11 +3,12 @@ from datetime import datetime
 from rest_framework import serializers
 
 from reviews.models import (Review, Comment,
-                            Genre, Category, Title)
+                            Genre, Category, 
+                            Title)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = serializers.StringRelatedField(
+    author = serializers.SlugRelatedField(
         slug_field='username',
         read_only=True,
     )
