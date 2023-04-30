@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from rest_framework import serializers
+
 from reviews.models import (Review, Comment,
                             Genre, Category, Title)
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-
     author = serializers.StringRelatedField(
         slug_field='username',
         read_only=True,
@@ -72,7 +72,6 @@ class TitleSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-
     author = serializers.StringRelatedField(
         read_only=True
     )
