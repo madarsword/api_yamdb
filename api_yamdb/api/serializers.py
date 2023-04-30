@@ -2,6 +2,46 @@ from datetime import datetime
 
 from rest_framework import serializers
 from reviews.models import Category, Comment, Genre, Review, Title
+from rest_framework.validators import UniqueValidator
+
+
+from rest_framework import serializers
+from users.models import User
+
+
+class SignUpSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    username = serializers.CharField()
+
+    def create(self, validated_data):
+        user = User.objects.create_user(
+            username=validated_data['username'],
+            email=validated_data['email']
+        )
+        return user
+
+
+class UserCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'username', 'email'
+        )
+    
+    def validate(self, data):
+        if data.get('username') == 'me':
+            raise serializers.ValidationError(
+                'Нельзя использовать имя "me"'
+            )
+        if User.objects.filter(username=data.get('username')):
+            raise serializers.ValidationError(
+                'Пользователь с таким именем уже существует.'
+            )
+        if User.objects.filter(email=data.get('email')):
+            raise serializers.ValidationError(
+                'Пользователь с таким email уже существует.'
+            )
 
 
 class ReviewSerializer(serializers.ModelSerializer):
