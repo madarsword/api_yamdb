@@ -1,8 +1,8 @@
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
+from users.models import User
 
 from .validators import validate_year
-from users.models import User
 
 
 class Genre(models.Model):
@@ -56,7 +56,7 @@ class Review(models.Model):
     )
     score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
-        default=1,
+        default=5,
         validators=[
             MinValueValidator(
                 1,

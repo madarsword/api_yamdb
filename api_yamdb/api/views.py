@@ -1,10 +1,27 @@
 from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets
 from reviews.models import Review, Title
-from .serializers import (ReviewSerializer, CommentSerializer, 
-                          TitleSerializer)
 
-from django_filters.rest_framework import DjangoFilterBackend
+from .serializers import CommentSerializer, ReviewSerializer, TitleSerializer
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .serializers import SignUpSerializer
+
+
+class ConfirmationCode(viewsets.GenericViewSet):
+    pass
+
+class SignUpView(APIView):
+    def post(self, request, format=None):
+        serializer = SignUpSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'message': 'User created successfully'}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class TitleViewSet(viewsets.ModelViewSet):

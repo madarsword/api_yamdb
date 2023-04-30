@@ -1,6 +1,5 @@
-from pathlib import Path
 from datetime import timedelta
-
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -120,3 +119,4 @@ AUTH_USER_MODEL = 'users.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'app-messages'
+FROM_EMAIL = 'registration_yamdb@yandex.ru'
