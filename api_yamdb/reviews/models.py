@@ -58,7 +58,7 @@ class Review(models.Model):
         related_name='reviews',
         verbose_name='Автор отзыва',
     )
-    score = models.IntegerField(
+    score = models.PositiveSmallIntegerField(
         verbose_name='Оценка',
         default=1,
         validators=[
@@ -115,4 +115,4 @@ class Comment(models.Model):
         verbose_name_plural = 'Комментарии',
     
     def __str__(self):
-        return self.author
+        return self.text[:15]
