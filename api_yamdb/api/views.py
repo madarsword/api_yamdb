@@ -23,14 +23,14 @@ class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter, )
-    search_field = ('name', )
+    search_fields = ('name', )
 
 
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerialzier
     filter_backends = (filters.SearchFilter, )
-    search_field = ('name', )
+    search_fields = ('name', )
 
 
 class ConfirmationCode(viewsets.GenericViewSet):
