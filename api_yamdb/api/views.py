@@ -1,17 +1,44 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import status, viewsets
+from rest_framework import status, viewsets, mixins, filters
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from reviews.models import Review, Title, Category, Genre
+
 
 from reviews.models import Review, Title
 from .serializers import (CommentSerializer, ReviewSerializer,
-                          SignUpSerializer, TitleSerializer)
-from api.filters import TitleFilter
-from api.permissions import IsAdminOrReadOnly
+                          SignUpSerializer, TitleSerializer,
+                          CategorySerializer, GenreSerialzier)
+
+
+class CreateListDestroyViewSet(
+    mixins.CreateModelMixin,
+    mixins.ListModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet
+):
+    pass
+
+
+class CategoryViewSet(CreateListDestroyViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('name', )
+
+
+class GenreViewSet(CreateListDestroyViewSet):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerialzier
+    filter_backends = (filters.SearchFilter, )
+    search_fields = ('name', )
+
+
 
 class ConfirmationCode(viewsets.GenericViewSet):
     pass
+
 
 class SignUpView(APIView):
     def post(self, request, format=None):

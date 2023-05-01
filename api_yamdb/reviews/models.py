@@ -6,16 +6,16 @@ from .validators import validate_year
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=256, blank=False)
+    slug = models.SlugField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
         return self.slug
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=256)
-    slug = models.SlugField(max_length=50, unique=True)
+    name = models.CharField(max_length=256, blank=False)
+    slug = models.SlugField(max_length=50, unique=True, blank=False)
 
     def __str__(self):
         return self.slug
@@ -108,6 +108,6 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий',
         verbose_name_plural = 'Комментарии',
-    
+
     def __str__(self):
         return self.text[:15]
