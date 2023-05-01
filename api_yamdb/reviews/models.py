@@ -1,7 +1,7 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from users.models import User
 
+from users.models import User
 from .validators import validate_year
 
 
@@ -103,7 +103,6 @@ class Comment(models.Model):
         Review,
         on_delete=models.CASCADE,
         related_name='comments',
-        verbose_name='Отзыв',
     )
 
     class Meta:
