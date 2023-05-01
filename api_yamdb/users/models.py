@@ -1,5 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.utils.crypto import get_random_string
 
 from .validators import UsernameValidator
 
@@ -52,3 +55,6 @@ class User(AbstractUser):
     @property
     def is_user(self):
         return self.role == "user"
+    
+    def __str__(self):
+        return self.username
