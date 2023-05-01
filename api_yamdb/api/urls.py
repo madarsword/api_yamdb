@@ -10,6 +10,7 @@ from .views import (
     GenreViewSet
 )
 
+
 router_v1 = DefaultRouter()
 router_v1.register(r'titles', TitleViewSet, basename='titles')
 router_v1.register(
@@ -29,7 +30,9 @@ router_v1.register(r'genres/(?P<slug>[\w-]+)', GenreViewSet, basename='genre')
 #router_v1.register(r'users', basename='users')
 
 
+
 urlpatterns = [
     path('v1/', include(router_v1.urls)),
-    path('v1/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('v1/auth/token/',),
+    # path('v1/auth/signup/',),
 ]

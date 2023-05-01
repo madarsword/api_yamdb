@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from reviews.models import Review, Title, Category, Genre
 
+
+from reviews.models import Review, Title
 from .serializers import (CommentSerializer, ReviewSerializer,
                           SignUpSerializer, TitleSerializer,
                           CategorySerializer, GenreSerialzier)
@@ -33,6 +35,7 @@ class GenreViewSet(CreateListDestroyViewSet):
     search_fields = ('name', )
 
 
+
 class ConfirmationCode(viewsets.GenericViewSet):
     pass
 
@@ -50,7 +53,9 @@ class SignUpView(APIView):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    filter_backends = (DjangoFilterBackend, )
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TitleFilter
     filterset_fields = ('name', 'year', 'description', 'genre', 'category')
 
 
@@ -88,3 +93,15 @@ class CommentViewSet(viewsets.ModelViewSet):
             author=self.request.user,
             review=self.get_review()
         )
+
+
+class CategoryViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class GenreViewSet(viewsets.ModelViewSet):
+    pass
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    pass
