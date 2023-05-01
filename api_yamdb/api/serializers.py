@@ -1,14 +1,16 @@
 from datetime import datetime
 
 from rest_framework import serializers
+from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueValidator
+
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 
 
 class SignUpSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    username = serializers.CharField()
+    email = serializers.EmailField(max_length=254, required=True)
+    username = serializers.CharField(max_length=150, required=True)
 
     def create(self, validated_data):
         user = User.objects.create_user(
@@ -16,6 +18,14 @@ class SignUpSerializer(serializers.Serializer):
             email=validated_data['email']
         )
         return user
+    
+    def validate(self, data):
+        if data['username'] == 'me':
+            raise serializers.ValidationError('Логин <me> нельзя использовать')
+        return data
+    
+    class Meta:
+        fields = ('username', 'email')
 
 
 class UserCreateSerializer(serializers.ModelSerializer):
@@ -27,10 +37,6 @@ class UserCreateSerializer(serializers.ModelSerializer):
         )
     
     def validate(self, data):
-        if data.get('username') == 'me':
-            raise serializers.ValidationError(
-                'Нельзя использовать имя "me"'
-            )
         if User.objects.filter(username=data.get('username')):
             raise serializers.ValidationError(
                 'Пользователь с таким именем уже существует.'
@@ -49,6 +55,7 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Review
+        read_only_fields = ['title']
         fields = (
             'id', 'text', 'author', 'score', 'pub_date',
         )
@@ -67,13 +74,15 @@ class ReviewSerializer(serializers.ModelSerializer):
         return data
 
 
-class GenreSerialzier(serializers.ModelSerializer):
+class GenreSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Genre
         fields = ('name', 'slug')
 
 
 class CategorySerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Category
         fields = ('name', 'slug')
@@ -83,17 +92,18 @@ class TitleSerializer(serializers.ModelSerializer):
     genre = serializers.SlugRelatedField(
         many=True,
         slug_field='slug',
+        required=False,
         queryset=Genre.objects.all(),
     )
     category = serializers.SlugRelatedField(
         slug_field='slug',
+        many=False,
         queryset=Category.objects.all()
     )
-    description = serializers.CharField(required=False)
 
     class Meta:
         model = Title
-        fields = ('id', 'name', 'year', 'description', 'genre', 'category')
+        fields = '__all__'
 
     def validate_year(self, value):
         if value > datetime.now().year:
@@ -108,11 +118,25 @@ class TitleSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     author = serializers.StringRelatedField(
-        read_only=True
+        read_only=True,
     )
 
     class Meta:
         model = Comment
         fields = (
             'id', 'text', 'author', 'pub_date'
+        )
+
+
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'bio',
+            'role'
         )
