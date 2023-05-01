@@ -3,11 +3,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from reviews.models import Review, Title
 
+from reviews.models import Review, Title
 from .serializers import (CommentSerializer, ReviewSerializer,
                           SignUpSerializer, TitleSerializer)
-
+from api.filters import TitleFilter
+from api.permissions import IsAdminOrReadOnly
 
 class ConfirmationCode(viewsets.GenericViewSet):
     pass
@@ -25,7 +26,9 @@ class SignUpView(APIView):
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    filter_backends = (DjangoFilterBackend, )
+    permission_classes = [IsAdminOrReadOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = TitleFilter
     filterset_fields = ('name', 'year', 'description', 'genre', 'category')
 
 
