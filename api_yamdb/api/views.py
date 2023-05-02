@@ -9,7 +9,8 @@ from .permissions import (IsAuthorOrReadOnly, IsAdmin,
                           IsModerator, ReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
-                          TitleSerializer, UserSerializer)
+                          TitleSerializer, TitleCreateSerializer,
+                          UserSerializer)
 
 
 class CreateListDestroyViewSet(
@@ -41,6 +42,11 @@ class TitleViewSet(viewsets.ModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitleFilter
     permission_classes = [IsAdmin|ReadOnly]
+
+    def get_serializer_class(self):
+        if self.request.method in ('POST', 'PATCH',):
+            return TitleCreateSerializer
+        return TitleSerializer
 
 
 class ReviewViewSet(viewsets.ModelViewSet):

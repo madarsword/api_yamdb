@@ -1,5 +1,5 @@
-from datetime import datetime
-
+from django.utils import timezone
+from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueValidator
@@ -61,7 +61,6 @@ class ReviewSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        """Не дает юзерам оставлять больше одного отзыва."""
         request = self.context.get('request')
         if not request.method == 'POST':
             return data
@@ -88,32 +87,45 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('name', 'slug')
 
 
-class TitleSerializer(serializers.ModelSerializer):
-    genre = serializers.SlugRelatedField(
-        many=True,
-        slug_field='slug',
-        required=False,
-        queryset=Genre.objects.all(),
-    )
+class TitleCreateSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(
-        slug_field='slug',
-        many=False,
-        queryset=Category.objects.all()
+        slug_field='slug', queryset=Category.objects.all(),
+    )
+    genre = serializers.SlugRelatedField(
+        slug_field='slug', queryset=Genre.objects.all(), many=True
     )
 
     class Meta:
         model = Title
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'year', 'description', 'genre', 'category'
+        )
 
     def validate_year(self, value):
-        if value > datetime.now().year:
+        current_year = timezone.now().year
+        if not 0 <= value <= current_year:
             raise serializers.ValidationError(
-                'Год выпуска не может быть больше текущего')
+                'Проверьте год создания произведения'
+            )
         return value
+    
 
-    def to_representation(self, instance):
-        self.fields['category'] = CategorySerializer()
-        return super().to_representation(instance)
+class TitleSerializer(serializers.ModelSerializer):
+    rating = serializers.SerializerMethodField()
+    category = CategorySerializer()
+    genre = GenreSerializer(many=True)
+
+    class Meta:
+        model = Title
+        fields = (
+            'id', 'name', 'year', 'rating', 'description', 'genre', 'category'
+        )
+
+    def get_rating(self, obj):
+        rating = obj.reviews.aggregate(Avg('score')).get('score__avg')
+        if not rating:
+            return rating
+        return round(rating, 1)
 
 
 class CommentSerializer(serializers.ModelSerializer):
