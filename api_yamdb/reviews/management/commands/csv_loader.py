@@ -19,7 +19,6 @@ FILES = {
 }
 
 class Command(BaseCommand):
-    help = 'load data from csv'
 
     def handle(self, *args, **options):
         for model, csv_file in FILES.items():
