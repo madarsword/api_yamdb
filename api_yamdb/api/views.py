@@ -1,14 +1,12 @@
 from django.shortcuts import get_object_or_404
-from django.db.models import Avg
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, viewsets
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
 from api.filters import TitleFilter
-from api.permissions import (IsAuthorAndTeamOrReadOnly,
-                             IsAdminOrReadOnly, IsOwnerOrAdmins)
+from .permissions import (IsAuthorOrReadOnly, IsAdmin,
+                          IsModerator, ReadOnly)
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleSerializer, UserSerializer)
@@ -20,10 +18,6 @@ class CreateListDestroyViewSet(
     mixins.DestroyModelMixin,
     viewsets.GenericViewSet
 ):
-    permission_classes = [
-        IsAuthenticatedOrReadOnly,
-        IsAdminOrReadOnly
-    ]
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name', 'slug')
     lookup_field = 'slug'
@@ -32,24 +26,28 @@ class CreateListDestroyViewSet(
 class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsAdmin|ReadOnly]
 
 
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+    permission_classes = [IsAdmin|ReadOnly]
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     serializer_class = TitleSerializer
-    permission_classes = [IsAdminOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = TitleFilter
+    permission_classes = [IsAdmin|ReadOnly]
 
 
 class ReviewViewSet(viewsets.ModelViewSet):
     serializer_class = ReviewSerializer
-    permission_classes = [IsAuthorAndTeamOrReadOnly]
+    permission_classes = [
+        IsAdmin|IsModerator|IsAuthorOrReadOnly,
+    ]
 
     def get_title(self):
         title_id = self.kwargs.get('title_id')
@@ -67,7 +65,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthorAndTeamOrReadOnly]
+    permission_classes = [
+        IsAdmin|IsModerator|IsAuthorOrReadOnly,
+    ]
     
     def get_review(self):
         review_id = self.kwargs.get('review_id')
@@ -86,5 +86,5 @@ class CommentViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsOwnerOrAdmins]
+    permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
