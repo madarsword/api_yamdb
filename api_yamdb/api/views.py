@@ -3,6 +3,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, mixins, status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
@@ -99,3 +101,18 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
+
+    @action(
+        methods=['GET', 'PATCH'],
+        detail=False,
+        permission_classes=[IsAuthenticated],
+    )
+    def me(self, request):
+        user = request.user
+        if request.method == 'GET':
+            serializer =  UserSerializer(user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(role=user.role, partial=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
