@@ -101,6 +101,8 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
+    lookup_field = 'username'
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(
         methods=['GET', 'PATCH'],
@@ -110,7 +112,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def me(self, request):
         user = request.user
         if request.method == 'GET':
-            serializer =  UserSerializer(user)
+            serializer = UserSerializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
         serializer = UserSerializer(user, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
