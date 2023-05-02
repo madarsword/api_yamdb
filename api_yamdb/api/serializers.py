@@ -25,7 +25,8 @@ class SignUpSerializer(serializers.Serializer):
         return data
     
     class Meta:
-        fields = ('username', 'email')
+        model = User
+        fields = ('username', 'email', 'confirmation_code')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
