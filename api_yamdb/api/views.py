@@ -1,9 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.response import Response
-from rest_framework import filters, mixins, viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import action
+from rest_framework.views import APIView
 
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
@@ -13,7 +12,7 @@ from .permissions import (IsAuthorOrReadOnly, IsAdmin,
 from .serializers import (CategorySerializer, CommentSerializer,
                           GenreSerializer, ReviewSerializer,
                           TitleSerializer, TitleCreateSerializer,
-                          UserSerializer)
+                          UserSerializer, SignUpSerializer)
 
 
 class CreateListDestroyViewSet(
@@ -31,12 +30,14 @@ class CategoryViewSet(CreateListDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [IsAdmin|ReadOnly]
+    search_fields = ['name']
 
 
 class GenreViewSet(CreateListDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     permission_classes = [IsAdmin|ReadOnly]
+    search_fields = ['name']
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -97,3 +98,4 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAdmin]
     filter_backends = [filters.SearchFilter]
+    search_fields = ['username']
