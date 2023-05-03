@@ -9,14 +9,15 @@ from users.models import User
 
 
 FILES = {
+    User: 'users.csv',
     Category: 'category.csv',
     Genre: 'genre.csv',
-    Review: 'review.csv',
     Title: 'titles.csv',
     Title.genre.through: 'genre_title.csv',
+    Review: 'review.csv',
     Comment: 'comments.csv',
-    User: 'users.csv',
 }
+
 
 class Command(BaseCommand):
 
