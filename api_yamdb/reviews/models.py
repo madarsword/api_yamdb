@@ -12,6 +12,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
+        ordering = ['name']
 
     def __str__(self):
         return self.slug
@@ -24,6 +25,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
+        ordering = ['name']
 
     def __str__(self):
         return self.slug
@@ -45,6 +47,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
+        ordering = ['name']
 
     def __str__(self):
         return self.name
@@ -92,11 +95,11 @@ class Review(models.Model):
         verbose_name_plural = 'Отзывы'
         constraints = [
             models.UniqueConstraint(
-            fields=['title', 'author'],
-            name="review_unique"
+                fields=['title', 'author'],
+                name="review_unique"
             )
         ]
-    
+
     def __str__(self):
         return self.name
 
@@ -125,6 +128,7 @@ class Comment(models.Model):
     class Meta:
         verbose_name = 'Комментарий'
         verbose_name_plural = 'Комментарии'
+        ordering = ['-pub_date']
 
     def __str__(self):
         return self.name

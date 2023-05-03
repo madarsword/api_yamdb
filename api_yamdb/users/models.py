@@ -10,9 +10,9 @@ class User(AbstractUser):
     ADMIN = 'admin'
 
     ROLE = (
-          (USER, USER),
-          (MODERATOR, MODERATOR),
-          (ADMIN, ADMIN),
+        (USER, USER),
+        (MODERATOR, MODERATOR),
+        (ADMIN, ADMIN),
     )
 
     username_validator = UsernameValidator()
@@ -37,7 +37,7 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
-    
+
     @property
     def is_admin(self):
         return self.role == "admin" or self.is_superuser
@@ -49,6 +49,9 @@ class User(AbstractUser):
     @property
     def is_user(self):
         return self.role == "user"
-    
+
     def __str__(self):
         return self.username
+
+    class Meta:
+        ordering = ['last_name']

@@ -1,32 +1,10 @@
 from django.utils import timezone
 from django.db.models import Avg
+from django.core.validators import RegexValidator
 from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
-from rest_framework.validators import UniqueValidator
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
-
-
-class SignUpSerializer(serializers.Serializer):
-    email = serializers.EmailField(max_length=254, required=True)
-    username = serializers.CharField(max_length=150, required=True)
-
-    def create(self, validated_data):
-        user = User.objects.create_user(
-            username=validated_data['username'],
-            email=validated_data['email']
-        )
-        return user
-    
-    def validate(self, data):
-        if data['username'] == 'me':
-            raise serializers.ValidationError('Логин <me> нельзя использовать')
-        return data
-    
-    class Meta:
-        model = User
-        fields = ('username', 'email', 'confirmation_code')
 
 
 class ReviewSerializer(serializers.ModelSerializer):
@@ -90,7 +68,7 @@ class TitleCreateSerializer(serializers.ModelSerializer):
                 'Проверьте год создания произведения'
             )
         return value
-    
+
 
 class TitleSerializer(serializers.ModelSerializer):
     rating = serializers.SerializerMethodField()
@@ -134,3 +112,33 @@ class UserSerializer(serializers.ModelSerializer):
             'bio',
             'role'
         )
+
+
+class SignUpSerializer(serializers.Serializer):
+    regex = RegexValidator(
+        r'^[\w.@+-]+\Z',
+        'Доступны только цифры, буквы и символы: @/./+/-/_.'
+    )
+    username = serializers.CharField(
+        max_length=150,
+        required=True,
+        validators=[regex],
+    )
+    email = serializers.EmailField(max_length=254, required=True)
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'confirmation_code')
+
+
+class TokenSerializer(serializers.Serializer):
+    regex = RegexValidator(
+        r'^[\w.@+-]+\Z',
+        'Доступны только цифры, буквы и символы: @/./+/-/_.'
+    )
+    username = serializers.CharField(
+        max_length=150,
+        required=True,
+        validators=[regex],
+    )
+    confirmation_code = serializers.CharField(max_length=6, required=True)

@@ -2,7 +2,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (CategoryViewSet, CommentViewSet, GenreViewSet,
-                    ReviewViewSet, TitleViewSet, UserViewSet)
+                    ReviewViewSet, TitleViewSet, UserViewSet,
+                    signup, token)
 
 app_name = 'api'
 
@@ -24,7 +25,7 @@ router_v1.register(
 
 
 urlpatterns = [
-    #path('v1/auth/token/', ),
-    #path('v1/auth/signup/', ),
+    path('v1/auth/signup/', signup, name='signup'),
+    path('v1/auth/token/', token, name='token'),
     path('v1/', include(router_v1.urls)),
 ]
