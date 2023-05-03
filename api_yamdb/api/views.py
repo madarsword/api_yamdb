@@ -151,7 +151,7 @@ def signup(request):
             found_user = User.objects.get(email=email)
             found_user.confirmation_code = confirmation_code
             found_user.save()
-            return Response('Email занят, но такого пользователя не существует.',
+            return Response('Email занят, такого пользователя не существует.',
                             status=status.HTTP_400_BAD_REQUEST
                             )
         User.objects.create_user(username=username,
