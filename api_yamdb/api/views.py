@@ -1,6 +1,5 @@
 import random
 from rest_framework.decorators import api_view
-from django.core.mail import send_mail
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.shortcuts import get_object_or_404
@@ -152,7 +151,7 @@ def signup(request):
             found_user = User.objects.get(email=email)
             found_user.confirmation_code = confirmation_code
             found_user.save()
-            return Response(serializer.validated_data,
+            return Response('Email занят, но такого пользователя не существует.',
                             status=status.HTTP_400_BAD_REQUEST
                             )
         User.objects.create_user(username=username,
