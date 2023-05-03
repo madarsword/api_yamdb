@@ -1,7 +1,6 @@
 import csv
 
-from django.core.management.base import BaseCommand, CommandError
-from django.templatetags.static import static
+from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from reviews.models import Category, Genre, Review, Title, Comment
@@ -9,16 +8,18 @@ from users.models import User
 
 
 FILES = {
+    User: 'users.csv',
     Category: 'category.csv',
     Genre: 'genre.csv',
-    Review: 'review.csv',
     Title: 'titles.csv',
     Title.genre.through: 'genre_title.csv',
+    Review: 'review.csv',
     Comment: 'comments.csv',
-    User: 'users.csv',
 }
 
+
 class Command(BaseCommand):
+    help = 'Uploading data from CSV'
 
     def handle(self, *args, **options):
         for model, csv_file in FILES.items():
