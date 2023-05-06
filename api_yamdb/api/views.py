@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
-from reviews.models import Category, Genre, Review, Title
+from reviews.models import Category, Genre, Title
 from users.models import User
 from api.filters import TitleFilter
 from .extensions import send_confirmation_code
