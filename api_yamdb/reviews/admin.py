@@ -24,21 +24,6 @@ class TitleAdmin(admin.ModelAdmin):
     empty_value_display = '-пусто-'
 
 
-@admin.register(User)
-class UserAdmin(admin.ModelAdmin):
-    list_display = [
-        'username',
-        'email',
-        'role',
-        'bio',
-        'first_name',
-        'last_name',
-        'confirmation_code',
-    ]
-    list_filter = ['username']
-    empty_value_display = '-пусто-'
-
-
 @admin.register(Review)
 class ReviewAdmin(admin.ModelAdmin):
     list_display = ['title', 'text', 'author', 'score']

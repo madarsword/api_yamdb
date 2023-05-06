@@ -1,6 +1,14 @@
-from django.core.validators import RegexValidator
+import re
+
+from django.core.exceptions import ValidationError
 
 
-class UsernameValidator(RegexValidator):
-    regex = r'^[\w.@+-]'
-    flags = 0
+def validate_username(value):
+    if value == 'me':
+        raise ValidationError(
+            ('Имя пользователя не может быть <me>.')
+        )
+    if re.search(r'^[\w.@+-]+\Z', value) is None:
+        raise ValidationError(
+            (f'Недопустимые символы <{value}> в нике.')
+        )

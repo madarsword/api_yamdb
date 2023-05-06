@@ -33,5 +33,5 @@ class Command(BaseCommand):
                     data.append(model(**row))
             model.objects.bulk_create(data)
             self.stdout.write(self.style.SUCCESS(
-                'Load complete'
+                f'Load complete {csv_file}'
             ))
