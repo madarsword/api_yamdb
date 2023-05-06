@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 
-from reviews.models import Category, Genre, Title
+from reviews.models import Category, Genre, Title, Review
 from users.models import User
 from api.filters import TitleFilter
 from .extensions import send_confirmation_code
@@ -87,11 +87,14 @@ class CommentViewSet(viewsets.ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrModeratorOrAdminOrReadOnly]
     http_method_names = ['get', 'post', 'patch', 'delete']
-
+    
     def get_review(self):
-        title = get_object_or_404(Title, id=self.kwargs.get('title_id'))
-        review_id = title.reviews.get(id=self.kwargs.get('review_id'))
-        return review_id
+        review_id = self.kwargs.get('review_id')
+        return get_object_or_404(
+            Review,
+            pk=review_id,
+            title=self.kwargs.get('title_id')
+        )
 
     def get_queryset(self):
         return self.get_review().comments.all()
@@ -145,7 +148,6 @@ def signup(request):
             status=status.HTTP_400_BAD_REQUEST
         )
     confirmation_code = default_token_generator.make_token(user)
-    user.confirmation_code = confirmation_code
     send_confirmation_code(username, email, confirmation_code)
     return Response(serializer.data, status=status.HTTP_200_OK)
 
