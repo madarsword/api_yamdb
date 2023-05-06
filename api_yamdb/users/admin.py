@@ -12,7 +12,6 @@ class UserAdmin(admin.ModelAdmin):
         'bio',
         'first_name',
         'last_name',
-        'confirmation_code',
     ]
     list_filter = ['username']
     empty_value_display = '-пусто-'
